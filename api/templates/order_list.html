@@ -1,0 +1,8 @@
+{% for order in orders %}
+    <p>Order: {{ order.id }}, Average Price: {{ order.avg_drinks_price }}</p>
+    <ul>
+    {% for item in order.drinks.all %}
+        <li>{{ item.name }} - {{ item.price }}</li>
+    {% endfor %}
+    </ul>
+{% endfor %}
