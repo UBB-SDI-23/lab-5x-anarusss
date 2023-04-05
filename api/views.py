@@ -104,7 +104,7 @@ def orders_by_average_drink_price(request):
             'average_price': round(order.average_price, 2)
         })
 
-    return JsonResponse(data, safe=False)
+    return Response(data)
 
 @api_view(['GET'])
 def order_list_by_wage(request):

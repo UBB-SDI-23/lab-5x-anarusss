@@ -44,7 +44,9 @@ INSTALLED_APPS = [
     "api",
     "django_filters",
     'corsheaders',
-    'frontend.apps.FrontendConfig'
+    'frontend.apps.FrontendConfig',
+    'rest_framework_swagger',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
@@ -137,3 +139,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 STATICFILES_DIRS=[
     os.path.join(BASE_DIR, 'frontend/build/static')
 ]
+
+REST_FRAMEWORK = {
+    'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema'  # <-- Here
+}

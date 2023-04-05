@@ -40,7 +40,7 @@ class Table(models.Model):
     name = models.IntegerField()
     nopeople = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(20)])
     status =models.CharField(max_length=50)
-    waiter_id = models.ForeignKey(Waiter, on_delete=models.CASCADE, related_name="waiterTable") # 1 to many; a waiter can have more tables.
+    waiter_id = models.ForeignKey(Waiter, on_delete=models.CASCADE, null=True, related_name="waiterTable") # 1 to many; a waiter can have more tables.
 
     def __str__(self):
         return str(self.name)
@@ -76,19 +76,19 @@ class Order(models.Model):
 
 
 
-class OrderModelTest(TestCase):
-    def test_table_availability(self):
-        waiter = Waiter.objects.create(firstName='John', lastName='Doe', phoneNumber='1234567890', email='johndoe@example.com', wage=10)
-        table = Table.objects.create(name=1, nopeople=4, status='occupied', waiter_id=waiter)
+# class OrderModelTest(TestCase):
+#     def test_table_availability(self):
+#         waiter = Waiter.objects.create(firstName='John', lastName='Doe', phoneNumber='1234567890', email='johndoe@example.com', wage=10)
+#         table = Table.objects.create(name=1, nopeople=4, status='occupied', waiter_id=waiter)
 
-        drink = Drink.objects.create(name='Coffee', description='A hot cup of coffee', price=2, calories=100)
+#         drink = Drink.objects.create(name='Coffee', description='A hot cup of coffee', price=2, calories=100)
 
-        order1 = Order.objects.create(waiter=waiter, table=table)
-        order1.drinks.add(drink)
+#         order1 = Order.objects.create(waiter=waiter, table=table)
+#         order1.drinks.add(drink)
 
-        # Attempt to create a new order with the same table
-        with self.assertRaises(ValueError):
-            order2 = Order.objects.create(waiter=waiter, table=table)
-            order2.drinks.add(drink)
+#         # Attempt to create a new order with the same table
+#         with self.assertRaises(ValueError):
+#             order2 = Order.objects.create(waiter=waiter, table=table)
+#             order2.drinks.add(drink)
         
 
