@@ -1,25 +1,3 @@
-// import React, { Component } from "react";
-// import { render } from "react-dom";
-// import DrinkList from "./DrinkList";
-// import HomePage from "./HomePage";
-
-// export default class App extends Component {
-//   constructor(props) {
-//     super(props);
-//   }
-
-//   render() {
-//     return (
-//       <div>
-//         <DrinkList />
-//       </div>
-//     );
-//   }
-// }
-
-// const appDiv = document.getElementById("app");
-// render(<App />, appDiv);
-
 
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';

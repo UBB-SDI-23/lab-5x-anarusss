@@ -1,0 +1,7 @@
+venv
+node_modules/
+populate_db.sql
+api/migrations/
+log.txt
+static
+poetry.lock

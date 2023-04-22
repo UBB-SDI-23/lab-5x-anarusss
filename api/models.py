@@ -11,7 +11,7 @@ class Waiter(models.Model):
     firstName = models.CharField(max_length=50)
     lastName = models.CharField(max_length=50)
     phoneNumber = models.CharField(max_length=20)
-    email = models.CharField(max_length=30)
+    email = models.CharField(max_length=50)
     wage = models.IntegerField(validators=[MinValueValidator(0)])
 
     def __str__(self):

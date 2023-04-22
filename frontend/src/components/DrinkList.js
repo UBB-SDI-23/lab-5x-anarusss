@@ -1,42 +1,42 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { Link } from "react-router-dom";
 import { Card, CardContent, Typography, Grid, Button } from "@material-ui/core";
 
 const DrinkList = () => {
   const [drinks, setDrinks] = useState([]);
+  const [nextPageUrl, setNextPageUrl] = useState(null);
+  const [prevPageUrl, setPrevPageUrl] = useState(null);
 
   useEffect(() => {
-    const fetchDrinks = async () => {
-      try {
-        const response = await fetch("/api/drinks/");
-        if (response.ok) {
-          const data = await response.json();
-          setDrinks(data);
-        } else {
-          throw new Error("Failed to fetch drinks");
-        }
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchDrinks();
+    // Fetch initial page of drinks
+    fetchData('http://127.0.0.1:8000/api/drinks/');
   }, []);
 
-  const handleDelete = async (id) => {
-    try {
-      const response = await fetch(`/api/drinks/${id}`, {
-        method: "DELETE",
+  const fetchData = (url) => {
+    axios
+      .get(url)
+      .then(response => {
+        setDrinks(response.data.results);
+        setNextPageUrl(response.data.next);
+        setPrevPageUrl(response.data.previous);
+      })
+      .catch(error => {
+        console.error('Error fetching drinks:', error);
       });
-      if (response.ok) {
-        setDrinks(drinks.filter((drink) => drink.id !== id));
-      } else {
-        throw new Error("Failed to delete drink");
-      }
-    } catch (error) {
-      console.error(error);
+  };
+
+  const handleNextPage = () => {
+    if (nextPageUrl) {
+      fetchData(nextPageUrl);
     }
   };
-  
+
+  const handlePrevPage = () => {
+    if (prevPageUrl) {
+      fetchData(prevPageUrl);
+    }
+  };
 
   return (
     <Grid container spacing={2}>
@@ -81,9 +81,14 @@ const DrinkList = () => {
           </Card>
         </Grid>
       ))}
+      <button onClick={handlePrevPage} disabled={!prevPageUrl}>Previous</button>
+      <button onClick={handleNextPage} disabled={!nextPageUrl}>Next</button>
 
     </Grid>
+    
   );
+
+
 };
 
 export default DrinkList;

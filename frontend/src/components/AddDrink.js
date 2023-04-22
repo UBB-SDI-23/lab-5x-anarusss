@@ -22,7 +22,7 @@ function AddDrink() {
     });
 
     if (response.ok) {
-      history.push('/drinks');
+      history.push('/');
     } else {
       console.error('Failed to add drink');
     }

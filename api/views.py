@@ -7,6 +7,8 @@ from rest_framework.views import APIView
 from django.db.models import Avg, F
 from django.http import JsonResponse
 from rest_framework.decorators import api_view
+from rest_framework.pagination import PageNumberPagination
+
 
 from api.models import Waiter, Order, Drink, Table
 from api.serializers import TableSerializer, WaiterSerializer, OrderSerializer, DynamicTableSerializer, \
@@ -69,9 +71,19 @@ def order_list(request):
 
 
 
+class DrinksPagination(PageNumberPagination):
+    page_size = 6  # Number of items to display per page
+    page_size_query_param = 'items_per_page'  # Query parameter to customize page size
+    max_page_size = 100  # Maximum page size allowed
+
+
+
 class DrinksList(generics.ListCreateAPIView):
     queryset = Drink.objects.all()
     serializer_class = DrinkSerializer
+    
+    pagination_class = DrinksPagination  # Use the custom pagination class
+
 
 class DrinkDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Drink.objects.all()

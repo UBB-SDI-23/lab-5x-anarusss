@@ -7,3 +7,9 @@ pytz==2022.7.1
 sqlparse==0.4.3
 drf-yasg==1.21.5
 django-rest-swagger==2.2.0
+psycopg2
+django_dia
+django_extensions
+gunicorn
+psycopg2-binary
+faker

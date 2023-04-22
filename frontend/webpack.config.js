@@ -17,13 +17,6 @@ module.exports = {
           loader: "babel-loader",
         },
       },
-      {
-        test: /\.map$/,
-        loader: 'file-loader',
-        options: {
-          name: '[name].[ext]',
-        },
-      },
     ],
   },
   optimization: {

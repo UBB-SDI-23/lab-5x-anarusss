@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 import { useParams } from 'react-router-dom';
 import { Container, Typography, TextField, Button } from '@material-ui/core';
 
 const EditDrink = () => {
+  const history = useHistory();
   const { id } = useParams();
   const [drink, setDrink] = useState({});
   const [name, setName] = useState('');
@@ -47,7 +49,7 @@ const EditDrink = () => {
       });
       if (response.ok) {
         console.log('Drink updated successfully');
-        // Optionally, you can redirect or show a success message here
+        history.push('/');
       } else {
         console.error('Failed to update drink');
       }
