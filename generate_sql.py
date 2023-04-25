@@ -11,7 +11,7 @@ for _ in range(RANGE):
     waiter = {
         'firstName': fake.first_name(),
         'lastName': fake.last_name(),
-        'phoneNumber': fake.numerify(text='###-###'),
+        'phoneNumber': fake.numerify(text='######'),
         'email': fake.email(),
         'wage': random.randint(0, 5000),
         'created': fake.date_time_this_decade()

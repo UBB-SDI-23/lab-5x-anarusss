@@ -11,9 +11,12 @@ class DrinkSerializer(serializers.ModelSerializer):
         fields = ['id', 'name', 'description','ingredients','price','calories']
 
 class WaiterSerializer(serializers.ModelSerializer):
+    #created = serializers.DateTimeField(default=timezone.now, read_only=True)
+
+
     class Meta:
         model = Waiter
-        fields = ('__all__')
+        fields = ['id', 'firstName', 'lastName', 'phoneNumber', 'email', 'wage']
 
 
 class OrderSerializer(serializers.ModelSerializer):
@@ -73,7 +76,7 @@ class TableSerializerWithoutWaiter(serializers.ModelSerializer):
 class DynamicWaiterSerializer(DynamicFieldsModelSerializer):
     firstName = serializers.CharField(max_length=50)
     lastName = serializers.CharField(max_length=50)
-    phoneNumber = serializers.IntegerField()
+    phoneNumber = serializers.CharField(max_length=50)
     email = serializers.CharField(max_length=50)
     wage = serializers.CharField(max_length=50)
     waiterTable = TableSerializerWithoutWaiter(many=True, read_only=True)
@@ -82,7 +85,7 @@ class DynamicWaiterSerializer(DynamicFieldsModelSerializer):
         model = Waiter
         fields = [ 'firstName', 'lastName', 'phoneNumber', 'email', 'wage', 'waiterTable']
 
-class OrdersByAvfPriceSerializer (serializers.ModelSerializer):
+class OrdersByAvfPriceSerializer(serializers.ModelSerializer):
     avg_drinks_price = serializers.SerializerMethodField()
 
 

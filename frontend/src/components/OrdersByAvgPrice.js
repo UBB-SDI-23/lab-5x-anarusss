@@ -1,49 +1,73 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 
-function OrdersByAverageDrinkPrice() {
+const OrdersByAverageDrinkPrice = () => {
   const [orders, setOrders] = useState([]);
-  const [waiterId, setWaiterId] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [nextPage, setNextPage] = useState(null);
+  const [prevPage, setPrevPage] = useState(null);
+
+  const fetchOrders = async (url) => {
+    try {
+      setLoading(true);
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error('Failed to fetch orders');
+      }
+      const data = await response.json();
+      setOrders(data.results);
+      setNextPage(data.next);
+      setPrevPage(data.previous);
+      setLoading(false);
+    } catch (error) {
+      setError(error.message);
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    fetch(`/api/orders/by-avg-price?waiter_id=${waiterId}`)
-      .then((response) => response.json())
-      .then((data) => setOrders(data))
-      .catch((error) => console.error(error));
-  }, [waiterId]);
+    fetchOrders('/api/orders/by-avg-price');
+  }, []);
+
+  const handleNextPage = () => {
+    if (nextPage) {
+      fetchOrders(nextPage);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (prevPage) {
+      fetchOrders(prevPage);
+    }
+  };
+
+  if (loading) {
+    return <p>Loading orders...</p>;
+  }
+
+  if (error) {
+    return <p>Error: {error}</p>;
+  }
 
   return (
     <div>
-      <h1>Orders By Average Drink Price</h1>
-      <label htmlFor="waiterId">Filter by Waiter:</label>
-      <input
-        type="text"
-        id="waiterId"
-        name="waiterId"
-        value={waiterId}
-        onChange={(e) => setWaiterId(e.target.value)}
-      />
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Waiter</th>
-            <th>Table</th>
-            <th>Average Price</th>
-          </tr>
-        </thead>
-        <tbody>
-          {orders.map((order) => (
-            <tr key={order.id}>
-              <td>{order.id}</td>
-              <td>{order.waiter}</td>
-              <td>{order.table}</td>
-              <td>{order.average_price}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <h1>Order by Avg price</h1>
+      <ul>
+        {orders.map(order => (
+          <li key={order.id}>
+            <strong>ID:</strong> {order.id}<br />
+            <strong>Waiter:</strong> {order.waiter}<br />
+            <strong>Table:</strong> {order.table}<br />
+            <strong>Average Price:</strong> {order.average_price}
+          </li>
+        ))}
+      </ul>
+      <div>
+        <button onClick={handlePrevPage} disabled={!prevPage}>Previous</button>
+        <button onClick={handleNextPage} disabled={!nextPage}>Next</button>
+      </div>
     </div>
   );
-}
+};
 
 export default OrdersByAverageDrinkPrice;

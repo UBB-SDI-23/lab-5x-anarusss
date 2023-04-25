@@ -9,9 +9,18 @@ function AddDrink() {
   const [ingredients, setIngredients] = useState('');
   const [price, setPrice] = useState('');
   const [calories, setCalories] = useState('');
+  const [priceError, setPriceError] = useState('');
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    // Perform validation
+    if (!price || isNaN(price) || price < 0) {
+      setPriceError('Price must be a positive number');
+      return;
+    } else {
+      setPriceError('');
+    }
 
     const response = await fetch('/api/drinks/', {
       method: 'POST',
@@ -66,6 +75,8 @@ function AddDrink() {
           onChange={(event) => setPrice(event.target.value)}
           margin="normal"
           required
+          error={!!priceError}
+          helperText={priceError}
         />
         <TextField
           fullWidth
@@ -80,7 +91,7 @@ function AddDrink() {
           Add Drink
         </Button>
       </form>
-      </Container>
+    </Container>
   );
 }
 

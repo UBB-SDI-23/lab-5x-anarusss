@@ -3,26 +3,26 @@ import axios from 'axios';
 import { Link } from "react-router-dom";
 import { Card, CardContent, Typography, Grid, Button } from "@material-ui/core";
 
-const DrinkList = () => {
-  const [drinks, setDrinks] = useState([]);
+const TableList = () => {
+  const [tables, setTables] = useState([]);
   const [nextPageUrl, setNextPageUrl] = useState(null);
   const [prevPageUrl, setPrevPageUrl] = useState(null);
 
   useEffect(() => {
-    // Fetch initial page of drinks
-    fetchData('http://127.0.0.1:8000/api/drinks/');
+    // Fetch initial page of tables
+    fetchData('/api/tables/');
   }, []);
 
   const fetchData = (url) => {
     axios
       .get(url)
       .then(response => {
-        setDrinks(response.data.results);
+        setTables(response.data.results);
         setNextPageUrl(response.data.next);
         setPrevPageUrl(response.data.previous);
       })
       .catch(error => {
-        console.error('Error fetching drinks:', error);
+        console.error('Error fetching tables:', error);
       });
   };
 
@@ -38,40 +38,50 @@ const DrinkList = () => {
     }
   };
 
+  const handleDelete = async (id) => {
+    try {
+      const response = await fetch(`/api/tables/${id}`, {
+        method: "DELETE",
+      });
+      if (response.ok) {
+        setTables(tables.filter((table) => table.id !== id));
+      } else {
+        throw new Error("Failed to delete table");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  
+
   return (
     <Grid container spacing={2}>
       <Grid item xs={12}>
-        <Typography variant="h4">Drinks</Typography>
+        <Typography variant="h4">Tables</Typography>
       </Grid>
-      {drinks.map((drink) => (
-        <Grid item xs={12} sm={6} md={4} key={drink.id}>
+      {tables.map((table) => (
+        <Grid item xs={12} sm={6} md={4} key={table.id}>
           <Card>
             <CardContent>
-              <Typography variant="h5">{drink.name}</Typography>
+              <Typography variant="h5">{table.name}</Typography>
               <Typography color="textSecondary">
-                {drink.description}
+                No. of People: {table.nopeople}
               </Typography>
               <Typography color="textSecondary">
-                Ingredients: {drink.ingredients}
-              </Typography>
-              <Typography color="textSecondary">
-                Price: {drink.price}
-              </Typography>
-              <Typography color="textSecondary">
-                Calories: {drink.calories}
+                Status: {table.status}
               </Typography>
             </CardContent>
             <CardContent>
               <Button
                 component={Link}
-                to={`/drinks/${drink.id}`}
+                to={`/tables/${table.id}`}
                 variant="contained"
                 color="primary"
               >
                 Edit
               </Button>
               <Button
-                onClick={() => handleDelete(drink.id)}
+                onClick={() => handleDelete(table.id)}
                 variant="contained"
                 color="secondary"
               >
@@ -81,14 +91,12 @@ const DrinkList = () => {
           </Card>
         </Grid>
       ))}
-      <button onClick={handlePrevPage} disabled={!prevPageUrl}>Previous</button>
-      <button onClick={handleNextPage} disabled={!nextPageUrl}>Next</button>
+      <Button onClick={handlePrevPage} disabled={!prevPageUrl}>Previous</Button>
+      <Button onClick={handleNextPage} disabled={!nextPageUrl}>Next</Button>
 
     </Grid>
     
   );
-
-
 };
 
-export default DrinkList;
+export default TableList;

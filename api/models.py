@@ -7,18 +7,18 @@ from django.test import TestCase
 
 #Waiter
 class Waiter(models.Model):
-    created = models.DateTimeField(auto_now_add=True)
+    created = models.DateTimeField(auto_now=True, blank=True, null=True)
     firstName = models.CharField(max_length=50)
     lastName = models.CharField(max_length=50)
     phoneNumber = models.CharField(max_length=20)
-    email = models.CharField(max_length=50)
+    email = models.CharField(max_length=40)
     wage = models.IntegerField(validators=[MinValueValidator(0)])
 
     def __str__(self):
         return self.firstName
 
     class Meta:
-        ordering = ['created']
+        ordering = ['lastName']
 
 class Drink(models.Model):
     created = models.DateTimeField(auto_now_add=True)
@@ -36,7 +36,7 @@ class Drink(models.Model):
 
 
 class Table(models.Model):     
-    created = models.DateTimeField(auto_now_add=True)
+    created = models.DateTimeField(auto_now=True)
     name = models.IntegerField()
     nopeople = models.IntegerField(validators=[MinValueValidator(1), MaxValueValidator(20)])
     status =models.CharField(max_length=50)
@@ -54,9 +54,9 @@ class Order(models.Model):
     table = models.ForeignKey(Table, on_delete=models.CASCADE, related_name="orderedDrink") # many to many
     drinks=models.ManyToManyField(Drink)
 
-    def save(self, *args, **kwargs):
-        self.full_clean()
-        super().save(*args, **kwargs)
+    # def save(self, *args, **kwargs):
+    #     self.full_clean()
+    #     super().save(*args, **kwargs)
 
     def waiter_wage(self,waiter_id):
         return Waiter.objects.get(id=waiter_id).wage
@@ -76,19 +76,4 @@ class Order(models.Model):
 
 
 
-# class OrderModelTest(TestCase):
-#     def test_table_availability(self):
-#         waiter = Waiter.objects.create(firstName='John', lastName='Doe', phoneNumber='1234567890', email='johndoe@example.com', wage=10)
-#         table = Table.objects.create(name=1, nopeople=4, status='occupied', waiter_id=waiter)
-
-#         drink = Drink.objects.create(name='Coffee', description='A hot cup of coffee', price=2, calories=100)
-
-#         order1 = Order.objects.create(waiter=waiter, table=table)
-#         order1.drinks.add(drink)
-
-#         # Attempt to create a new order with the same table
-#         with self.assertRaises(ValueError):
-#             order2 = Order.objects.create(waiter=waiter, table=table)
-#             order2.drinks.add(drink)
-        
 
