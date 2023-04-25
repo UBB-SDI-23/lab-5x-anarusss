@@ -4,7 +4,8 @@ import { BrowserRouter as Router, Route, Switch, Link } from 'react-router-dom';
 import Button from '@material-ui/core/Button';
 
 import OrdersByAverageDrinkPrice from './OrdersByAvgPrice';
-import OrderListByWage from './OrdersByWaiterWage';
+import OrderListByWage from './OrderListByWage';
+import TableNoOfPeople from './TablePeople'
 import DrinkList from './drinks/DrinkList';
 import WaiterList from './waiters/WaiterList';
 import OrderList from './orders/OrderList'
@@ -13,6 +14,7 @@ import TableList from './tables/TableList'
 import AddDrink from './drinks/AddDrink';
 import AddWaiter from './waiters/AddWaiter';
 import AddOrder from './orders/AddOrder';
+import AddTable from './tables/AddTable';
 
 import EditDrink from './drinks/EditDrink';
 import EditWaiter from './waiters/EditWaiter';
@@ -48,7 +50,7 @@ const App = () => {
             <Link to="/addOrder" style={{ margin: '8px 0', textDecoration: 'none', color: 'black' }}>
               <Button fullWidth>Add New Order</Button>
             </Link>
-            <Link to="/addOrder" style={{ margin: '8px 0', textDecoration: 'none', color: 'black' }}>
+            <Link to="/addTable" style={{ margin: '8px 0', textDecoration: 'none', color: 'black' }}>
               <Button fullWidth>Add New Table</Button>
             </Link>
 
@@ -61,17 +63,29 @@ const App = () => {
             <Link to="/tables" style={{ margin: '8px 0', textDecoration: 'none', color: 'black' }}>
               <Button fullWidth>Tables</Button>
             </Link>
+            <h2 style={{color: 'blue'}}>Statistics:</h2>
             <Link to="/raport" style={{ margin: '8px 0', textDecoration: 'none', color: 'black' }}>
               <Button fullWidth>Orders By Average Drink Price</Button>
             </Link>
+            <Link to="/ordersByWage" style={{ margin: '8px 0', textDecoration: 'none', color: 'black' }}>
+              <Button fullWidth>Orders By Waiter wage</Button>
+            </Link>
+            <Link to="/tablepeople" style={{ margin: '8px 0', textDecoration: 'none', color: 'black' }}>
+              <Button fullWidth>Filter tables by people capacity</Button>
+            </Link>
         </div>
+
         <div style={{ flex: 1, padding: '16px' }}>
           <Switch>
             <Route exact path="/" component={DrinkList} />
             <Route path="/raport" component={OrdersByAverageDrinkPrice} />
+            <Route path="/ordersByWage" component={OrderListByWage} />
+            <Route path="/tablepeople" component={TableNoOfPeople} />
+
             <Route path="/addDrink" component={AddDrink} />
             <Route path="/addWaiter" component={AddWaiter} />
             <Route path="/addOrder" component={AddOrder} />
+            <Route path="/addTable" component={AddTable} />
 
             <Route path="/drinks/:id" component={EditDrink} />
             <Route path="/waiters/:id" component={EditWaiter} />

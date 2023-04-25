@@ -60,6 +60,7 @@ class TableDetail(generics.RetrieveUpdateDestroyAPIView):
 class TableNoOfPeople(generics.ListAPIView):
     serializer_class = TableSerializer
     lookup_url_kwarg = "nopeople"
+    pagination_class = Pagination
 
     def get_queryset(self):
         queryset = Table.objects.all()
@@ -72,8 +73,6 @@ class TableNoOfPeople(generics.ListAPIView):
 def order_list(request):
     orders=Order.objects.annotate(avg_drinks_price=Avg('drinks__price')).order_by('-avg_drinks_price')
     return render(request, 'order_list.html', {'orders': orders})
-
-
 
 
 class DrinksList(generics.ListCreateAPIView):
@@ -105,7 +104,6 @@ def orders_by_average_drink_price(request):
 
     orders = orders.annotate(average_price=Avg('drinks__price')).order_by('-average_price')
 
-
     # Manual Pagination
     offset = int(request.GET.get('offset', 0))
     limit = int(request.GET.get('limit', 10))
@@ -126,7 +124,6 @@ def orders_by_average_drink_price(request):
             'table': order.table.name,
             'average_price': round(average_price, 2)
         })
-
     # Create response data
     data = {
         'total_count': total_count,
@@ -134,7 +131,6 @@ def orders_by_average_drink_price(request):
         'limit': limit,
         'results': res
     }
-
     # Add links for next and previous pages
     if offset + limit < total_count:
         next_offset = offset + limit
@@ -145,62 +141,46 @@ def orders_by_average_drink_price(request):
 
     return Response(data)
 
-# @api_view(['GET'])
-# def orders_by_average_drink_price(request):
-#     waiter_id = request.GET.get('waiter_id')
-#     orders = Order.objects.all()
-
-#     if waiter_id:
-#         orders = orders.filter(waiter_id=waiter_id)
-
-#     orders = Order.objects.annotate(total_price=Sum('drinks__price'))
-
-#     data = []
-#     p=20
-#     if (p<=200):
-#      for order in orders:
-#          p=p+1
-#         #if(order.average_price):
-#          data.append({
-#             'id': order.id,
-#             'waiter': order.waiter.firstName,
-#             'table': order.table.name,
-#             'average_price': order.total_price
-#         })
-
-#     return Response(data)
-
-# def orders_by_average_drink_price(request):
-#     # Query all orders with their total drink price
-#     orders = Order.objects.annotate(total_price=Sum('drinks__price'))
-
-#     # Serialize the orders queryset to JSON
-#     data = []
-#     for order in orders:
-#         data.append({
-#             'id': order.id,
-#             'waiter': str(order.waiter),
-#             'table': str(order.table),
-#             'total_price': order.total_price
-#         })
-
-#     # Create response data
-#     response_data = {
-#         'orders': data
-#     }
-
-#     # Return JSON response
-#     return JsonResponse(response_data)
-
-
-
 
 @api_view(['GET'])
 def order_list_by_wage(request):
     orders = Order.objects.annotate(waiter_wage=F('waiter__wage')).order_by('-waiter_wage')
 
-    serializer = OrderSerializer(orders, many=True)
-    return Response(serializer.data)
+    # Manual Pagination
+    offset = int(request.GET.get('offset', 0))
+    limit = int(request.GET.get('limit', 10))
+
+     # Perform pagination
+    total_count = orders.count()
+    paginated_orders = orders[offset:offset + limit]
+
+
+    res = []
+    for order in paginated_orders:
+        # Check if average_price is None, if so, set it to 0
+        waiter_wage = order.waiter_wage or 0
+        res.append({
+            'id': order.id,
+            'waiter': order.waiter.firstName,
+            'table': order.table.name,
+            'waiter_wage': waiter_wage
+        })
+    # Create response data
+    data = {
+        'count': total_count,
+        'offset': offset,
+        'limit': limit,
+        'results': res
+    }
+    # Add links for next and previous pages
+    if offset + limit < total_count:
+        next_offset = offset + limit
+        data['next'] = request.build_absolute_uri(f'?offset={next_offset}&limit={limit}')
+    if offset > 0:
+        prev_offset = max(offset - limit, 0)
+        data['previous'] = request.build_absolute_uri(f'?offset={prev_offset}&limit={limit}')
+
+    return Response(data)
 
 
 # class WaitersTable(generics.ListCreateAPIView):
