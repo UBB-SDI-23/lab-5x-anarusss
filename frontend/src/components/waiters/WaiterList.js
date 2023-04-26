@@ -84,6 +84,9 @@ const WaiterList = () => {
                 <Typography color="textSecondary">
                   Wage: {waiter.wage}
                 </Typography>
+                <Typography color="textSecondary">
+                  Assigned tables: {waiter.num_tables}
+                </Typography>
               </CardContent>
               <CardContent>
                 <Button

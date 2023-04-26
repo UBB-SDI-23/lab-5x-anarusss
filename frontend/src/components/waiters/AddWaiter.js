@@ -10,8 +10,18 @@ function AddWaiter() {
   const [email, setEmail] = useState('');
   const [wage, setWage] = useState('');
 
+  const [wageError, setWagerror] = useState('');
+
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    // Perform validation
+    if (!wage || isNaN(wage) || wage < 0) {
+      setWagerror('Wage must be a positive number');
+      return;
+    } else {
+      setWagerror('');
+    }
 
     const response = await fetch('/api/waiters/', {
       method: 'POST',
@@ -74,6 +84,8 @@ function AddWaiter() {
           onChange={(event) => setWage(event.target.value)}
           margin="normal"
           required
+          error={!!wageError}
+          helperText={wageError}
         />
         <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
           Add Waiter
